@@ -21,7 +21,7 @@
   width: 100px; 
   height: auto;
   margin-right: 10px; 
-}
+}4. Modify the Notifications
 
 .App-body {
   padding: 30px;
@@ -35,5 +35,8 @@
   color: black;
   font-style: italic;
   text-align: center;
-  
+}
+
+.emailPassword {
+  display: flex;
 }
