@@ -1,26 +1,46 @@
 import React from "react";
-import CourseListRow from "./CourseListRow";
+import NotificationItem from "./NotificationItem";
 import { shallow } from "enzyme";
+import { StyleSheetTestUtils } from "aphrodite";
 
-describe("Course List Row component test", () => {
-  it("should render without crashing", () => {
-    const wrapper = shallow(<CourseListRow textFirstCell="test" />);
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
+afterEach(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
+
+describe("rendering components", () => {
+  it("renders NotificationItem component without crashing", () => {
+    const wrapper = shallow(<NotificationItem />);
 
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("should render one cell with colspan = 2 when textSecondCell null", () => {
-    const wrapper = shallow(<CourseListRow isHeader={true} textFirstCell="test" textSecondCell={null} />);
+  it('renders correct html from type="default" value="test" props', () => {
+    const wrapper = shallow(<NotificationItem />);
 
-    expect(wrapper.find("tr").children()).toHaveLength(1);
-    expect(wrapper.find("tr").childAt(0).html()).toEqual('<th colSpan="2">test</th>');
+    wrapper.setProps({ type: "default", value: "test" });
+    expect(wrapper.html()).toEqual('<li class="default_2c02es" data-notification-type="default">test</li>');
   });
 
-  it("should render two cells when textSecondCell not null", () => {
-    const wrapper = shallow(<CourseListRow isHeader={false} textFirstCell="test" textSecondCell="test" />);
+  it('renders correct html from  html="<u>test</u>" props', () => {
+    const wrapper = shallow(<NotificationItem />);
 
-    expect(wrapper.find("tr").children()).toHaveLength(2);
-    expect(wrapper.find("tr").childAt(0).html()).toEqual("<td>test</td>");
-    expect(wrapper.find("tr").childAt(1).html()).toEqual("<td>test</td>");
+    wrapper.setProps({ html: "<u>test</u>" });
+    expect(wrapper.html()).toEqual('<li data-urgent="true" class="urgent_cyonix"><u>test</u></li>');
+  });
+});
+
+describe("onclick event behaves as it should", () => {
+  it("should call console.log", () => {
+    const wrapper = shallow(<NotificationItem />);
+    const spy = jest.fn();
+
+    wrapper.setProps({ value: "test item", markAsRead: spy, id: 1 });
+    wrapper.find("li").props().onClick();
+    expect(spy).toBeCalledTimes(1);
+    expect(spy).toBeCalledWith(1);
+    spy.mockRestore();
   });
 });
